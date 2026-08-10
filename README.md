@@ -29,9 +29,10 @@ same 4-pixel spur on a 3-pixel-wide capillary may be the only real thing there.
 
 This project does it the other way round. The mask boundary is turned into a
 polygon **first**, at a chosen tolerance, and the skeleton is computed from
-that polygon. Smoothing happens before the skeleton exists, so noise never gets
-the chance to become a branch, and the result comes out as a graph with a
-polyline and a radius on every edge.
+that polygon. Smoothing happens before the skeleton exists, so most boundary
+noise never gets the chance to become a branch in the first place — not none of
+it, as the numbers below show, but far less of it — and the result comes out as
+a graph with a polyline and a radius on every edge.
 
 It started from a paper by [Saidou, Zineddine and Rhazzaf
 (2024)](docs/saidou-et-al-2024-a-novel-method-of-skeletonization-of-complex-shapes-based-on-bisectors.pdf),
@@ -53,8 +54,9 @@ Panel 4 is why the polygon step is there. Both panels 4 and 5 are the same
 construction — all the bisectors that fall inside the shape — but panel 4 runs
 it on the raw pixel boundary. A staircase boundary has a corner at every pixel,
 each corner generates its own bisector, and you get the comb of hairs in the
-picture. Panel 5 is the same thing on the simplified polygon, after removing
-what is left of the hairs by the angle test described below.
+picture. Panel 5 is the same construction on the simplified polygon of panel 3,
+after the angle test described below has removed what hairs are left, and after
+pruning.
 
 ## Why bisectors give you the medial axis
 
@@ -202,8 +204,11 @@ rather report the trade than hide it.
 ![real](figures/05_real.png)
 
 **Retina.** 106 branches and 45 bifurcations, against 314 branches and 181
-junctions from thinning on the same mask — a 3× difference, entirely in short
-spurs. 554 polyline vertices against 2864 skeleton pixels. Each branch carries
+junctions from thinning on the same mask. The 3× difference is almost all short
+spurs rather than missing vessels: the two skeletons cover nearly the same
+total length (2914 px of polyline against 2864 skeleton pixels), thinning just
+cuts it into three times as many pieces. 554 polyline vertices against 2864
+skeleton pixels, so about 5× smaller. Each branch carries
 its length, mean radius and tortuosity, which is the scatter plot on the right:
 one row per vessel segment, median calibre 4.2 px, median tortuosity 1.04.
 That table is the actual output, the picture is just a way of looking at it.
@@ -260,8 +265,9 @@ that would have caught them.
 - **Centeredness is slightly worse than thinning**, 0.81 against 0.85 on the
   retina, and about 1.7% of sampled skeleton points round onto a boundary
   pixel. Thinning is exactly centered by construction on the pixel grid.
-- **The wavefront implementation is incomplete** and only handles convex
-  shapes, as described above. It is a validation tool, not the working method.
+- **The wavefront implementation is incomplete.** It handles edge events only,
+  which in practice means convex polygons; on every concave test shape it stops
+  and says why. It is a validation tool, not the working method.
 - **Segmentation quality is not the point here and is not good.** The Frangi +
   hysteresis vessel mask merges adjacent vessels into blobs near the optic
   disc, and the skull mask needs a hand-picked percentile. Where the mask is
@@ -282,8 +288,9 @@ python -m pytest tests -q
 ```
 
 Then any experiment; each writes its figure into `figures/` and its numbers
-into `results/`. No dataset to download — the images come from scikit-image's
-own samples.
+into `results/`. There is no dataset to fetch by hand: both images are
+scikit-image samples, `retina()` ships with the package and `brain()` is
+downloaded once by pooch on first use.
 
 ```bash
 python experiments/01_pipeline.py
