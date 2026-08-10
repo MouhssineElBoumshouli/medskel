@@ -1,0 +1,102 @@
+{
+ "by_epsilon": [
+  {
+   "epsilon": 1.0,
+   "theta": 70.0,
+   "components": 40,
+   "branches": 130,
+   "total_length": 3006.3651925348668,
+   "thin_length": 1659.18860834828
+  },
+  {
+   "epsilon": 2.0,
+   "theta": 70.0,
+   "components": 29,
+   "branches": 106,
+   "total_length": 2914.250839697056,
+   "thin_length": 1303.7666351827565
+  },
+  {
+   "epsilon": 3.0,
+   "theta": 70.0,
+   "components": 39,
+   "branches": 104,
+   "total_length": 2878.8583162182003,
+   "thin_length": 1275.8282344483766
+  },
+  {
+   "epsilon": 4.0,
+   "theta": 70.0,
+   "components": 27,
+   "branches": 99,
+   "total_length": 2880.8590457993555,
+   "thin_length": 1162.1262676395327
+  },
+  {
+   "epsilon": 6.0,
+   "theta": 70.0,
+   "components": 29,
+   "branches": 77,
+   "total_length": 2874.155998143081,
+   "thin_length": 859.3244142366784
+  }
+ ],
+ "by_theta": [
+  {
+   "epsilon": 2.0,
+   "theta": 30.0,
+   "components": 13,
+   "branches": 113,
+   "total_length": 2979.4797176548864,
+   "thin_length": 1253.931025534545
+  },
+  {
+   "epsilon": 2.0,
+   "theta": 40.0,
+   "components": 18,
+   "branches": 112,
+   "total_length": 2974.6849716202746,
+   "thin_length": 1253.931025534545
+  },
+  {
+   "epsilon": 2.0,
+   "theta": 50.0,
+   "components": 17,
+   "branches": 111,
+   "total_length": 2958.3350152589937,
+   "thin_length": 1309.079805496537
+  },
+  {
+   "epsilon": 2.0,
+   "theta": 60.0,
+   "components": 29,
+   "branches": 107,
+   "total_length": 2927.589934166835,
+   "thin_length": 1306.9310451659571
+  },
+  {
+   "epsilon": 2.0,
+   "theta": 70.0,
+   "components": 29,
+   "branches": 106,
+   "total_length": 2914.250839697056,
+   "thin_length": 1303.7666351827565
+  },
+  {
+   "epsilon": 2.0,
+   "theta": 80.0,
+   "components": 40,
+   "branches": 102,
+   "total_length": 2876.0828454846687,
+   "thin_length": 1327.2471332918637
+  },
+  {
+   "epsilon": 2.0,
+   "theta": 85.0,
+   "components": 39,
+   "branches": 101,
+   "total_length": 2867.4427910249083,
+   "thin_length": 1352.0286090475781
+  }
+ ]
+}

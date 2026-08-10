@@ -1,0 +1,28 @@
+{
+ "retina": {
+  "mask_px": 18559,
+  "polygon_vertices": 315,
+  "ours_branches": 106,
+  "ours_bifurcations": 45,
+  "ours_graph_components": 29,
+  "ours_seconds": 1.532331943511963,
+  "thinning_branches": 314,
+  "thinning_junctions": 181,
+  "thinning_seconds": 0.015594005584716797,
+  "polyline_vertices": 554,
+  "skeleton_pixels": 2864,
+  "compression": 5.169675090252707,
+  "centeredness": 0.8074648167847682,
+  "total_length_px": 2914.250839697056,
+  "median_calibre_px": 4.172121559799865,
+  "median_tortuosity": 1.0387750737632064
+ },
+ "skull": {
+  "mask_px": 4297,
+  "branches": 12,
+  "endpoints": 6,
+  "holes": 1,
+  "loop_points": 933,
+  "median_thickness_px": 7.112588015016762
+ }
+}
