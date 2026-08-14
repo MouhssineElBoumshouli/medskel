@@ -145,12 +145,20 @@ def curvature_check(ma):
     parabola. A straight skeleton can only ever produce straight segments, so
     this is where the two definitions come apart.
     """
+    from medskel.voronoi import _reduce_to_branches
+
+    # Measure on the UNsimplified polyline. Skeleton.polylines() is RDP
+    # simplified for storage, and simplifying a curve before asking how curved
+    # it is would be measuring the simplifier.
+    raw = _reduce_to_branches(ma.graph, simplify=0.0)
+
     reflex = np.array([40., 40.])
     best, best_d = None, np.inf
-    for poly in ma.polylines():
-        d = np.min(np.hypot(*(poly - reflex).T))
-        if d < best_d:
-            best, best_d = poly, d
+    for *_, d in raw.edges(data=True):
+        poly = d["polyline"]
+        dist = np.min(np.hypot(*(poly - reflex).T))
+        if dist < best_d:
+            best, best_d = poly, dist
 
     if best is None or len(best) < 5:
         print("\n  (no branch found near the reflex vertex)")

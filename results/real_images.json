@@ -5,13 +5,34 @@
   "ours_branches": 106,
   "ours_bifurcations": 45,
   "ours_graph_components": 29,
-  "ours_seconds": 1.532331943511963,
-  "thinning_branches": 314,
-  "thinning_junctions": 181,
-  "thinning_seconds": 0.015594005584716797,
+  "ours_seconds": 0.6570730209350586,
+  "thinning_branches": 109,
+  "thinning_junctions": 53,
+  "thinning_seconds": 0.009893417358398438,
   "polyline_vertices": 554,
   "skeleton_pixels": 2864,
-  "compression": 5.169675090252707,
+  "storage_by_tolerance": {
+   "0.25": {
+    "thinning": 1486,
+    "ours": 554,
+    "ratio": 2.6823104693140793
+   },
+   "0.5": {
+    "thinning": 834,
+    "ours": 382,
+    "ratio": 2.183246073298429
+   },
+   "1.0": {
+    "thinning": 381,
+    "ours": 321,
+    "ratio": 1.1869158878504673
+   },
+   "2.0": {
+    "thinning": 288,
+    "ours": 263,
+    "ratio": 1.0950570342205324
+   }
+  },
   "centeredness": 0.8074648167847682,
   "total_length_px": 2914.250839697056,
   "median_calibre_px": 4.172121559799865,

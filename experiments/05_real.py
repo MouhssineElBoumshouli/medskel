@@ -90,7 +90,7 @@ def main():
         "thinning_seconds": t_thin,
         "polyline_vertices": comp["polyline_vertices"],
         "skeleton_pixels": comp["skeleton_pixels"],
-        "compression": comp["ratio"],
+        "storage_by_tolerance": comp["by_tolerance"],
         "centeredness": centeredness(skel, mask)["mean_ratio"],
         "total_length_px": skel.total_length(),
         "median_calibre_px": float(np.median(calibre)),
@@ -136,7 +136,7 @@ def main():
     cb = fig.colorbar(sm, ax=ax, fraction=0.046)
     cb.set_label("vessel radius (px)", fontsize=9)
     ax.set_title(f"ours, coloured by calibre\n{skel.n_branches()} branches, "
-                 f"{comp['polyline_vertices']} polyline vertices", fontsize=11)
+                 f"{skel.n_bifurcations()} bifurcations", fontsize=11)
 
     ax = fig.add_subplot(gs[0, 2])
     sc = ax.scatter(lengths, tort, c=calibre, cmap="viridis", s=18,

@@ -82,8 +82,8 @@ def _row(case, method, estimate, truth, mask, branches, expected, seconds, comp)
         "centeredness": ctr["mean_ratio"],
         "branches": int(branches), "expected_branches": int(expected),
         "seconds": float(seconds),
-        "polyline_vertices": comp["polyline_vertices"] if comp else None,
         "skeleton_pixels": comp["skeleton_pixels"] if comp else None,
+        "storage_by_tolerance": comp["by_tolerance"] if comp else None,
     }
 
 
@@ -112,12 +112,18 @@ def _markdown(rows):
               f"{r['seconds']:.2f} s |")
 
     ours = [r for r in rows if r["method"].startswith("ours")]
-    print("\ncompactness (polyline vertices vs skeleton pixels)")
+    print("\nstorage, both skeletons as polylines simplified at the SAME "
+          "tolerance")
+    print("(the advantage is a function of the tolerance, so here is the "
+          "whole sweep)")
+    tols = sorted(ours[0]["storage_by_tolerance"], key=float)
+    print(f"  {'phantom':<16}" + "".join(f"{'tol ' + t:>20}" for t in tols))
     for r in ours:
-        if r["polyline_vertices"]:
-            print(f"  {r['case']:15s} {r['polyline_vertices']:6d} vs "
-                  f"{r['skeleton_pixels']:6d} px  "
-                  f"({r['skeleton_pixels']/r['polyline_vertices']:.1f}x)")
+        line = f"  {r['case']:<16}"
+        for t in tols:
+            s = r["storage_by_tolerance"][t]
+            line += f"{s['thinning']:>8} vs{s['ours']:>5} ={s['ratio']:>4.1f}x"
+        print(line)
 
 
 if __name__ == "__main__":

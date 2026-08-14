@@ -8,9 +8,9 @@
   "centeredness": 0.9996214821833903,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.0022432804107666016,
-  "polyline_vertices": null,
-  "skeleton_pixels": null
+  "seconds": 0.002318859100341797,
+  "skeleton_pixels": null,
+  "storage_by_tolerance": null
  },
  {
   "case": "straight tube",
@@ -21,9 +21,30 @@
   "centeredness": 0.997674999695222,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.09657478332519531,
-  "polyline_vertices": 6,
-  "skeleton_pixels": 301
+  "seconds": 0.08504223823547363,
+  "skeleton_pixels": 301,
+  "storage_by_tolerance": {
+   "0.25": {
+    "thinning": 2,
+    "ours": 6,
+    "ratio": 0.3333333333333333
+   },
+   "0.5": {
+    "thinning": 2,
+    "ours": 4,
+    "ratio": 0.5
+   },
+   "1.0": {
+    "thinning": 2,
+    "ours": 4,
+    "ratio": 0.5
+   },
+   "2.0": {
+    "thinning": 2,
+    "ours": 2,
+    "ratio": 1.0
+   }
+  }
  },
  {
   "case": "curved tube",
@@ -34,9 +55,9 @@
   "centeredness": 0.9820461867460639,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.004434347152709961,
-  "polyline_vertices": null,
-  "skeleton_pixels": null
+  "seconds": 0.0031991004943847656,
+  "skeleton_pixels": null,
+  "storage_by_tolerance": null
  },
  {
   "case": "curved tube",
@@ -47,9 +68,30 @@
   "centeredness": 0.9736349258702969,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.25834083557128906,
-  "polyline_vertices": 25,
-  "skeleton_pixels": 401
+  "seconds": 0.1851041316986084,
+  "skeleton_pixels": 401,
+  "storage_by_tolerance": {
+   "0.25": {
+    "thinning": 178,
+    "ours": 25,
+    "ratio": 7.12
+   },
+   "0.5": {
+    "thinning": 66,
+    "ours": 18,
+    "ratio": 3.6666666666666665
+   },
+   "1.0": {
+    "thinning": 20,
+    "ours": 15,
+    "ratio": 1.3333333333333333
+   },
+   "2.0": {
+    "thinning": 12,
+    "ours": 12,
+    "ratio": 1.0
+   }
+  }
  },
  {
   "case": "tapered tube",
@@ -60,9 +102,9 @@
   "centeredness": 0.9930115941852014,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.0037412643432617188,
-  "polyline_vertices": null,
-  "skeleton_pixels": null
+  "seconds": 0.002568483352661133,
+  "skeleton_pixels": null,
+  "storage_by_tolerance": null
  },
  {
   "case": "tapered tube",
@@ -73,9 +115,30 @@
   "centeredness": 0.9888630447733177,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.08431673049926758,
-  "polyline_vertices": 3,
-  "skeleton_pixels": 401
+  "seconds": 0.0634012222290039,
+  "skeleton_pixels": 401,
+  "storage_by_tolerance": {
+   "0.25": {
+    "thinning": 2,
+    "ours": 3,
+    "ratio": 0.6666666666666666
+   },
+   "0.5": {
+    "thinning": 2,
+    "ours": 2,
+    "ratio": 1.0
+   },
+   "1.0": {
+    "thinning": 2,
+    "ours": 2,
+    "ratio": 1.0
+   },
+   "2.0": {
+    "thinning": 2,
+    "ours": 2,
+    "ratio": 1.0
+   }
+  }
  },
  {
   "case": "bifurcation",
@@ -84,11 +147,11 @@
   "p95_error": 0.6447197876281873,
   "coverage": 0.9828571428571429,
   "centeredness": 0.9817639679686295,
-  "branches": 8,
+  "branches": 3,
   "expected_branches": 3,
-  "seconds": 0.002965688705444336,
-  "polyline_vertices": null,
-  "skeleton_pixels": null
+  "seconds": 0.0030291080474853516,
+  "skeleton_pixels": null,
+  "storage_by_tolerance": null
  },
  {
   "case": "bifurcation",
@@ -99,9 +162,30 @@
   "centeredness": 0.9826771699635886,
   "branches": 3,
   "expected_branches": 3,
-  "seconds": 0.23168540000915527,
-  "polyline_vertices": 13,
-  "skeleton_pixels": 577
+  "seconds": 0.17739582061767578,
+  "skeleton_pixels": 577,
+  "storage_by_tolerance": {
+   "0.25": {
+    "thinning": 282,
+    "ours": 13,
+    "ratio": 21.692307692307693
+   },
+   "0.5": {
+    "thinning": 98,
+    "ours": 13,
+    "ratio": 7.538461538461538
+   },
+   "1.0": {
+    "thinning": 10,
+    "ours": 9,
+    "ratio": 1.1111111111111112
+   },
+   "2.0": {
+    "thinning": 8,
+    "ours": 8,
+    "ratio": 1.0
+   }
+  }
  },
  {
   "case": "vessel tree",
@@ -110,11 +194,11 @@
   "p95_error": 1.2249443407477616,
   "coverage": 0.9992217898832685,
   "centeredness": 0.9486484629489867,
-  "branches": 91,
+  "branches": 36,
   "expected_branches": 31,
-  "seconds": 0.0060002803802490234,
-  "polyline_vertices": null,
-  "skeleton_pixels": null
+  "seconds": 0.00571441650390625,
+  "skeleton_pixels": null,
+  "storage_by_tolerance": null
  },
  {
   "case": "vessel tree",
@@ -125,8 +209,29 @@
   "centeredness": 0.9195190174729498,
   "branches": 36,
   "expected_branches": 31,
-  "seconds": 0.38767504692077637,
-  "polyline_vertices": 122,
-  "skeleton_pixels": 1173
+  "seconds": 0.4405961036682129,
+  "skeleton_pixels": 1173,
+  "storage_by_tolerance": {
+   "0.25": {
+    "thinning": 551,
+    "ours": 122,
+    "ratio": 4.516393442622951
+   },
+   "0.5": {
+    "thinning": 256,
+    "ours": 102,
+    "ratio": 2.5098039215686274
+   },
+   "1.0": {
+    "thinning": 102,
+    "ours": 92,
+    "ratio": 1.108695652173913
+   },
+   "2.0": {
+    "thinning": 78,
+    "ours": 74,
+    "ratio": 1.054054054054054
+   }
+  }
  }
 ]

@@ -48,35 +48,98 @@ def skeleton_pixel_graph(skel):
     return g
 
 
-def count_pixel_branches(skel):
-    """Endpoints, junctions and branch count of a pixel skeleton."""
+def merge_junction_clusters(g):
+    """Collapse touching junction pixels into a single junction node.
+
+    Three lines cannot meet at one point on a pixel grid. Thinning leaves a
+    little knot of two to five mutually adjacent pixels instead, each of which
+    has three or more neighbours. Counted naively, that knot reads as several
+    branches one pixel long.
+
+    It is not a small effect and it is not fair to the baseline: on a clean
+    Y-shaped phantom, naive counting reports 8 branches for a shape with 3, and
+    all 5 extras are 1px long and sitting on top of each other at the single
+    junction. Merging the knot first makes a "branch" mean the same thing for a
+    pixel skeleton as it does for the Voronoi graph, which is the only way the
+    comparison in experiments/03_noise.py means anything.
+    """
+    g = g.copy()
+    junction_nodes = [n for n, d in g.degree() if d >= 3]
+    if not junction_nodes:
+        return g
+
+    for cluster in list(nx.connected_components(g.subgraph(junction_nodes))):
+        cluster = list(cluster)
+        keep = cluster[0]
+        for other in cluster[1:]:
+            if other in g and keep in g:
+                g = nx.contracted_nodes(g, keep, other, self_loops=False)
+    return g
+
+
+def branch_paths(skel, merge_junctions=True):
+    """Every branch of a pixel skeleton, as a list of pixel coordinates.
+
+    A branch is a maximal chain running between two nodes that are not simple
+    pass-through pixels (i.e. endpoints or junctions).
+    """
     g = skeleton_pixel_graph(skel)
     if g.number_of_nodes() == 0:
-        return {"endpoints": 0, "junctions": 0, "branches": 0, "n_pixels": 0}
+        return [], g
+    if merge_junctions:
+        g = merge_junction_clusters(g)
 
-    deg = dict(g.degree())
-    endpoints = sum(1 for d in deg.values() if d == 1)
-    junctions = sum(1 for d in deg.values() if d >= 3)
+    pos = nx.get_node_attributes(g, "pos")
+    anchors = {n for n, d in g.degree() if d != 2}
+    paths, seen = [], set()
 
-    # a branch is a maximal chain between two non-degree-2 nodes
-    anchors = {n for n, d in deg.items() if d != 2}
-    branches, seen = 0, set()
     for a in anchors:
         for nb in g.neighbors(a):
             if (a, nb) in seen:
                 continue
-            prev, cur = a, nb
+            prev, cur, path = a, nb, [a, nb]
             seen.add((a, nb))
             while g.degree(cur) == 2:
                 nxt = [n for n in g.neighbors(cur) if n != prev][0]
                 seen.add((cur, nxt))
                 seen.add((nxt, cur))
                 prev, cur = cur, nxt
+                path.append(cur)
             seen.add((cur, prev))
-            branches += 1
+            paths.append(np.array([pos[n] for n in path]))
 
-    return {"endpoints": endpoints, "junctions": junctions,
-            "branches": branches, "n_pixels": int(np.count_nonzero(skel))}
+    return paths, g
+
+
+def count_pixel_branches(skel, merge_junctions=True):
+    """Endpoints, junctions and branch count of a pixel skeleton.
+
+    merge_junctions=False reproduces the naive count, kept so the size of the
+    artefact can be shown rather than just asserted.
+    """
+    if np.count_nonzero(skel) == 0:
+        return {"endpoints": 0, "junctions": 0, "branches": 0, "n_pixels": 0}
+
+    paths, g = branch_paths(skel, merge_junctions=merge_junctions)
+    deg = dict(g.degree())
+    return {"endpoints": sum(1 for d in deg.values() if d == 1),
+            "junctions": sum(1 for d in deg.values() if d >= 3),
+            "branches": len(paths),
+            "n_pixels": int(np.count_nonzero(skel))}
+
+
+def polyline_vertices(skel, simplify=0.25):
+    """How many points it takes to store a pixel skeleton as polylines.
+
+    The fair counterpart to Skeleton.n_polyline_vertices(). Comparing our
+    simplified polylines against the baseline's raw pixel count would be
+    measuring our simplification step against their lack of one, which says
+    nothing about the two skeletons.
+    """
+    from .voronoi import _rdp_indices
+
+    paths, _ = branch_paths(skel)
+    return int(sum(len(_rdp_indices(p, simplify)) for p in paths))
 
 
 def prune_pixel_skeleton(skel, min_length=5):

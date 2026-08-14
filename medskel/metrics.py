@@ -138,14 +138,38 @@ def false_branches(n_found, n_expected):
     return max(int(n_found) - int(n_expected), 0)
 
 
-def compactness(skeleton, pixel_skeleton):
-    """How many numbers each representation costs.
+def compactness(skeleton, pixel_skeleton, tolerances=(0.25, 0.5, 1.0, 2.0)):
+    """Storage cost of each representation, at matched simplification.
 
-    A polyline vertex and a skeleton pixel are both 2 coordinates, so this is a
-    fair comparison of storage, and it is also a fair comparison of how many
-    primitives you have to reason about downstream.
+    An earlier version of this compared our *simplified* polylines against the
+    baseline's *raw pixel count* and reported ratios of 10x to 134x. That was
+    measuring our simplification step against the baseline's lack of one, not
+    measuring the two skeletons, and it made the method look far better than it
+    is.
+
+    Done properly, both skeletons are turned into polylines and simplified at
+    the same tolerance. The advantage then turns out to be almost entirely a
+    function of that tolerance: large at 0.25px, gone by 1px. Which makes
+    sense, because a pixel skeleton is a staircase pinned to the grid, so
+    demanding sub-pixel fidelity of it forces you to store every step, and it
+    was never accurate to better than about half a pixel in the first place.
+
+    The tolerance sweep is returned rather than a single headline number, so
+    the dependence is visible instead of hidden behind a choice.
     """
-    n_poly = skeleton.n_polyline_vertices()
+    from .baseline import polyline_vertices
+    from .voronoi import _reduce_to_branches
+
     n_pix = int(np.count_nonzero(pixel_skeleton))
-    return {"polyline_vertices": n_poly, "skeleton_pixels": n_pix,
-            "ratio": n_pix / n_poly if n_poly else np.nan}
+    sweep = {}
+    for tol in tolerances:
+        theirs = polyline_vertices(pixel_skeleton, simplify=tol)
+        ours = int(sum(len(d["polyline"]) for *_, d in
+                       _reduce_to_branches(skeleton.graph, simplify=tol
+                                           ).edges(data=True)))
+        sweep[str(tol)] = {"thinning": theirs, "ours": ours,
+                           "ratio": theirs / ours if ours else np.nan}
+
+    return {"skeleton_pixels": n_pix,
+            "polyline_vertices": skeleton.n_polyline_vertices(),
+            "by_tolerance": sweep}
