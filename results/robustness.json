@@ -1,0 +1,74 @@
+{
+ "sign_and_loo": {
+  "total_length": {
+   "wins": 26,
+   "n": 28,
+   "sign_p": 3.032386302947998e-06,
+   "loo_p_min": 2.9802322387695312e-08,
+   "loo_p_max": 1.043081283569336e-07,
+   "verdict": "stable"
+  },
+  "n_bifurcations": {
+   "wins": 18,
+   "n": 28,
+   "sign_p": 0.1849333420395851,
+   "loo_p_min": 0.0008278489112854004,
+   "loo_p_max": 0.005023345351219177,
+   "verdict": "stable"
+  },
+  "median_calibre": {
+   "wins": 11,
+   "n": 28,
+   "sign_p": 0.34492845088243484,
+   "loo_p_min": 0.11105082929134369,
+   "loo_p_max": 0.3483276069164276,
+   "verdict": "null"
+  },
+  "median_tortuosity": {
+   "wins": 8,
+   "n": 28,
+   "sign_p": 0.03569813817739487,
+   "loo_p_min": 0.0018585771322250366,
+   "loo_p_max": 0.01506437361240387,
+   "verdict": "stable"
+  },
+  "agreement": {
+   "wins": 0,
+   "n": 28,
+   "sign_p": 7.450580596923828e-09,
+   "loo_p_min": 1.4901161193847656e-08,
+   "loo_p_max": 1.4901161193847656e-08,
+   "verdict": "stable"
+  },
+  "agreement_core": {
+   "wins": 0,
+   "n": 28,
+   "sign_p": 7.450580596923828e-09,
+   "loo_p_min": 1.4901161193847656e-08,
+   "loo_p_max": 1.4901161193847656e-08,
+   "verdict": "stable"
+  }
+ },
+ "tolerance": {
+  "1.0": {
+   "thinning": 0.6793548797772854,
+   "bisector": 0.4406182721754597,
+   "winner": "thinning"
+  },
+  "2.0": {
+   "thinning": 0.8091512334234792,
+   "bisector": 0.7162655143949783,
+   "winner": "thinning"
+  },
+  "3.0": {
+   "thinning": 0.8788873794722527,
+   "bisector": 0.8356197802033192,
+   "winner": "thinning"
+  },
+  "5.0": {
+   "thinning": 0.9217838336676657,
+   "bisector": 0.910810222299282,
+   "winner": "thinning"
+  }
+ }
+}

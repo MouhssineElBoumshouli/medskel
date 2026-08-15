@@ -10,7 +10,7 @@ validate it exactly against answers computed by hand. Tested against real
 expert disagreement — 28 retinal images each traced independently by two
 people — it is **substantially more reproducible than pixel thinning on the
 measurements a study would actually report**: total vessel length moves 3×
-less between observers (p<0.0001) and bifurcation count 1.8× less (p=0.003).
+less between observers, on 26 of 28 images individually (p<0.0001).
 It is **less stable in where it puts the centerline** (p<0.0001 the other way),
 and it costs about 66× the runtime.
 
@@ -33,9 +33,9 @@ graph. Panels 3–5 are a close-up of the region boxed in panel 2.*
 
 - `medskel/` — the method, plus an independent second implementation of the
   paper's own wavefront construction used to cross-check it
-- 8 experiments that regenerate every figure and table below from scratch,
+- 9 experiments that regenerate every figure and table below from scratch,
   including a two-observer reproducibility study on 28 clinical images
-- 14 tests, each against a value derived by hand rather than a value the code
+- 28 tests, each against a value derived by hand rather than a value the code
   produced earlier
 - synthetic phantoms with known centerlines, so accuracy has something to be
   measured against
@@ -302,6 +302,46 @@ morphometry between raters". It does not support "more accurate", because there
 is no ground truth here — only two humans who disagree. A method could be
 consistently wrong in the same way on both tracings and score well on this.
 
+## Is that result robust, or a few lucky images?
+
+Medians and p-values over 28 images can be dragged around by a handful of them,
+so [`experiments/09_robustness.py`](experiments/09_robustness.py) applies the
+three checks a sceptical reader would apply. Each of them can sink the result.
+
+![robustness](figures/09_robustness.png)
+
+**Sign test** — ignore magnitudes, just count how many images each method wins.
+**Leave-one-out** — recompute the p-value 28 times, dropping a different image
+each time, and report the worst.
+
+| measure | bisector wins | sign test | leave-one-out p | verdict |
+|---|---|---|---|---|
+| total vessel length | **26 / 28** | p<0.0001 | 0.0000 – 0.0000 | robust |
+| bifurcation count | 18 / 28 | p=0.18 | 0.0008 – 0.0050 | **mixed, see below** |
+| median calibre | 11 / 28 | p=0.34 | 0.11 – 0.35 | no effect |
+| median tortuosity | 8 / 28 | p=0.036 | 0.0019 – 0.0151 | thinning wins |
+| skeleton agreement | **0 / 28** | p<0.0001 | 0.0000 – 0.0000 | thinning wins |
+
+Two of these deserve comment.
+
+**Total vessel length is the strongest claim here.** The bisector method is
+more reproducible on 26 of 28 images individually, and no single image can be
+dropped to make the p-value approach significance. That is the left panel: 26
+dots below the diagonal.
+
+**Bifurcation count is weaker than the median suggests, and I would not lead
+with it.** The Wilcoxon test is comfortably significant because when the
+bisector method wins it wins by a lot — but the *direction* only holds on 18 of
+28 images, and a plain sign test does not reach significance (p=0.18). The
+honest reading is that the median is real but the effect is inconsistent
+image-to-image.
+
+**Thinning's positional advantage is the most robust finding in the whole
+repo.** It wins on 28 of 28 images — the middle panel has no dots above the
+diagonal at all. And it is not an artefact of the 2 px matching tolerance I
+picked: sweeping that from 1 px to 5 px, thinning wins at every setting, with
+the gap widest at the finest tolerance (0.679 against 0.441 at 1 px).
+
 ## What broke
 
 Kept in the repo rather than tidied away, because they are the most useful part.
@@ -398,7 +438,7 @@ pip install -r requirements.txt
 python -m pytest tests -q
 ```
 
-14 tests, each checking against a value worked out by hand rather than against
+28 tests, each checking against a value worked out by hand rather than against
 whatever the code did last time. Then any experiment — each writes a figure to
 `figures/` and its numbers to `results/`:
 
