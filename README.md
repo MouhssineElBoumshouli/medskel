@@ -406,8 +406,12 @@ whatever the code did last time. Then any experiment — each writes a figure to
 python experiments/01_pipeline.py
 ```
 
-Both images are scikit-image samples: `retina()` ships with the package,
-`brain()` is fetched once by pooch.
+Experiments 01–07 need no data of their own: both images are scikit-image
+samples, `retina()` ships with the package and `brain()` is fetched once by
+pooch. **Experiment 08 is the exception** — it needs CHASE_DB1, which is not
+redistributed here. It exits with download instructions if the files are
+absent, so a fresh clone reproduces figures 01–07 and stops politely at 08.
+See [`data/README.md`](data/README.md); the download is 2.4 MB and CC BY 4.0.
 
 ```python
 from medskel import skeletonize
