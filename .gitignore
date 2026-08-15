@@ -4,3 +4,7 @@ __pycache__/
 .venv/
 venv/
 .DS_Store
+
+# datasets are not redistributed here, see data/README.md
+data/*
+!data/README.md

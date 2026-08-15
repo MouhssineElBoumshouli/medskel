@@ -133,6 +133,81 @@ def centeredness(estimate, mask, step=1.0):
             "outside_fraction": float(np.mean(here <= 0))}
 
 
+def vessel_summary(estimate, mask):
+    """The four numbers a vessel morphometry study would report.
+
+    Accepts either a Skeleton or a boolean pixel skeleton, and computes the
+    same quantities the same way for both, because the inter-observer
+    experiment compares methods and any difference in the measurement code
+    would land on the result as if it were a difference in the method.
+
+    One systematic caveat: arc length along a pixel skeleton is inflated by
+    the staircase, roughly 8% on diagonal runs. That biases the pixel method's
+    absolute lengths, but the experiment compares observer A against observer B
+    within a method, so the bias cancels.
+    """
+    from .voronoi import Skeleton
+    from .baseline import branch_paths
+
+    if isinstance(estimate, Skeleton):
+        table = estimate.branch_table()
+        if not table:
+            return _empty_summary()
+        return {
+            "total_length": estimate.total_length(),
+            "n_bifurcations": estimate.n_bifurcations(),
+            "median_calibre": float(np.median([2 * r["mean_radius"]
+                                               for r in table])),
+            "median_tortuosity": float(np.nanmedian([r["tortuosity"]
+                                                     for r in table])),
+        }
+
+    paths, g = branch_paths(estimate)
+    if not paths:
+        return _empty_summary()
+
+    dt = distance_transform_edt(np.asarray(mask) > 0)
+    h, w = dt.shape
+
+    lengths, calibres, torts = [], [], []
+    for p in paths:
+        seg = np.diff(p, axis=0)
+        L = float(np.hypot(seg[:, 0], seg[:, 1]).sum()) if len(p) > 1 else 0.0
+        chord = float(np.linalg.norm(p[-1] - p[0]))
+        xi = np.clip(np.round(p[:, 0]).astype(int), 0, w - 1)
+        yi = np.clip(np.round(p[:, 1]).astype(int), 0, h - 1)
+        lengths.append(L)
+        calibres.append(2 * float(np.mean(dt[yi, xi])))
+        if chord > 1e-9 and L > 0:
+            torts.append(L / chord)
+
+    return {
+        "total_length": float(np.sum(lengths)),
+        "n_bifurcations": sum(1 for _, d in g.degree() if d >= 3),
+        "median_calibre": float(np.median(calibres)),
+        "median_tortuosity": float(np.median(torts)) if torts else np.nan,
+    }
+
+
+def _empty_summary():
+    return {"total_length": 0.0, "n_bifurcations": 0,
+            "median_calibre": np.nan, "median_tortuosity": np.nan}
+
+
+def skeleton_agreement(a, b, mask_shape=None, tol=2.0, step=1.0):
+    """Fraction of each skeleton lying within `tol` px of the other.
+
+    A direct measure of whether the two observers' skeletons trace the same
+    curves, independent of any derived measurement.
+    """
+    pa, pb = _as_points(a, step), _as_points(b, step)
+    if len(pa) == 0 or len(pb) == 0:
+        return 0.0
+    da, _ = cKDTree(pb).query(pa)
+    db, _ = cKDTree(pa).query(pb)
+    return float(0.5 * (np.mean(da <= tol) + np.mean(db <= tol)))
+
+
 def compactness(skeleton, pixel_skeleton, tolerances=(0.25, 0.5, 1.0, 2.0)):
     """Storage cost of each representation, at matched simplification.
 
