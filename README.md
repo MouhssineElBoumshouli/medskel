@@ -384,8 +384,8 @@ count and reported 10× to 134×. That measures my simplification step against
 the baseline's lack of one. Simplifying both at the same tolerance, the ratio
 is 1.1–1.2× at any sensible tolerance.
 
-I found the first of these because someone looked at my figure and said they
-could not see the spurs I claimed were there. They were right.
+I found the first of these by going back to my own figure and failing to see
+the spurs I had claimed were in it. The figure was fine; the counting was not.
 
 **4. One error going the other way, which crippled the method.**
 `mask_to_polygon()` kept only the largest connected component of the mask. On a
