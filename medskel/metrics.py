@@ -133,11 +133,6 @@ def centeredness(estimate, mask, step=1.0):
             "outside_fraction": float(np.mean(here <= 0))}
 
 
-def false_branches(n_found, n_expected):
-    """Branches beyond what the phantom actually has."""
-    return max(int(n_found) - int(n_expected), 0)
-
-
 def compactness(skeleton, pixel_skeleton, tolerances=(0.25, 0.5, 1.0, 2.0)):
     """Storage cost of each representation, at matched simplification.
 

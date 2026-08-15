@@ -139,14 +139,29 @@ def test_skeleton_stays_inside_the_mask():
     assert inside.mean() > 0.99
 
 
-def test_simplification_does_not_change_reported_length():
-    """Lengths are measured before RDP, so compression must not shorten them."""
+def test_simplification_shrinks_storage_but_not_reported_length():
+    """Lengths are measured before RDP, so compression must not shorten them.
+
+    The earlier version of this test compared a skeleton against a no-op copy
+    of itself, so it asserted that a number equalled itself and could never
+    have failed. This one actually varies the tolerance.
+    """
+    from medskel.voronoi import _reduce_to_branches
+
     mask, _ = phantoms.curved_tube()
-    coarse = skeletonize(mask, epsilon=2.0, prune=1.0)
-    fine = skeletonize(mask, epsilon=2.0, prune=1.0)
-    fine.branches = type(fine.branches)(fine.branches)   # no-op copy
-    assert coarse.total_length() == pytest.approx(fine.total_length())
-    assert coarse.n_polyline_vertices() < 200
+    sk = skeletonize(mask, epsilon=2.0, prune=1.0)
+
+    lengths, sizes = [], []
+    for tol in (0.0, 0.25, 1.0):
+        sk.branches = _reduce_to_branches(sk.graph, simplify=tol)
+        lengths.append(sk.total_length())
+        sizes.append(sk.n_polyline_vertices())
+
+    # every tolerance reports the same total length...
+    assert lengths[1] == pytest.approx(lengths[0])
+    assert lengths[2] == pytest.approx(lengths[0])
+    # ...while actually storing fewer points
+    assert sizes[0] > sizes[1] > sizes[2]
 
 
 if __name__ == "__main__":

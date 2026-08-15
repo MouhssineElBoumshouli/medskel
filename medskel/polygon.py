@@ -38,9 +38,6 @@ class Boundary:
     def rings(self):
         return [self.outer] + self.holes
 
-    def all_points(self):
-        return np.vstack(self.rings)
-
     def n_vertices(self):
         return sum(len(r) for r in self.rings)
 
@@ -143,18 +140,3 @@ def polygon_contains(boundary, points):
     for hole in boundary.holes:
         inside &= ~Path(hole).contains_points(points)
     return inside
-
-
-def polygon_area(boundary):
-    a = abs(_signed_area(boundary.outer))
-    for hole in boundary.holes:
-        a -= abs(_signed_area(hole))
-    return a
-
-
-def polygon_perimeter(boundary):
-    total = 0.0
-    for ring in boundary.rings:
-        closed = np.vstack([ring, ring[:1]])
-        total += np.hypot(*np.diff(closed, axis=0).T).sum()
-    return total

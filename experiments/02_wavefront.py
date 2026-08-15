@@ -61,14 +61,14 @@ def compare(name, poly):
     ma = skeletonize_polygon(Boundary(poly), spacing=0.25, theta_deg=70,
                              prune=0.0)
     try:
+        from medskel.metrics import _densify
+
         wf = propagate(poly)
         err = np.nan
         if wf.arcs:
-            wp = wagon = wavefront_points(wf)
-            mp = np.vstack([p for p in ma.polylines()])
-            from medskel.metrics import _densify
-            mp = np.vstack([_densify(p, 0.5) for p in ma.polylines()])
-            d, _ = cKDTree(mp).query(wp)
+            wavefront = wavefront_points(wf)
+            medial = np.vstack([_densify(p, 0.5) for p in ma.polylines()])
+            d, _ = cKDTree(medial).query(wavefront)
             err = float(np.percentile(d, 95))
         return wf, ma, err, None
     except SplitEventError as e:

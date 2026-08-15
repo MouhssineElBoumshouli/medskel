@@ -9,17 +9,12 @@ measure is quantised to the pixel lattice.
 
 import numpy as np
 import networkx as nx
-from skimage.morphology import skeletonize as sk_skeletonize, medial_axis
+from skimage.morphology import skeletonize as sk_skeletonize
 
 
 def thinning(mask):
     """Zhang-Suen style thinning, skimage's default. Topology preserving."""
     return sk_skeletonize(np.asarray(mask) > 0)
-
-
-def medial_axis_pixels(mask, return_distance=False):
-    """Medial axis on the pixel grid, plus the distance transform."""
-    return medial_axis(np.asarray(mask) > 0, return_distance=return_distance)
 
 
 def skeleton_pixel_graph(skel):

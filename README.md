@@ -16,6 +16,23 @@ two measurement errors of my own that I had to correct along the way.
 Nourddin Saidou teaches at my university and suggested I implement the paper,
 which is how this started.
 
+![pipeline](figures/01_pipeline.png)
+
+*Fundus photograph → vessel mask → simplified polygon → bisectors → skeleton
+graph. Panels 3–5 are a close-up of the region boxed in panel 2.*
+
+**What is in here**
+
+- `medskel/` — the method, plus an independent second implementation of the
+  paper's own wavefront construction used to cross-check it
+- 7 experiments that regenerate every figure and table below from scratch
+- 14 tests, each against a value derived by hand rather than a value the code
+  produced earlier
+- synthetic phantoms with known centerlines, so accuracy has something to be
+  measured against
+- a section on what broke, including two errors of mine that inflated the
+  results before I caught them
+
 ---
 
 ## What a skeleton is, and why a medical image would want one
@@ -40,9 +57,8 @@ Pixel thinning shaves the mask inward until a one-pixel-wide line remains, so
 the roughness of the boundary directly shapes the skeleton. The paper's idea is
 to convert the boundary to a **simplified polygon first**, then compute the
 skeleton from that polygon, so smoothing happens before the skeleton exists
-rather than as spur-deletion afterwards.
-
-![pipeline](figures/01_pipeline.png)
+rather than as spur-deletion afterwards. That is the pipeline in the figure at
+the top.
 
 For the skeleton itself the paper proves that where two boundary segments meet
 the skeleton is their angle bisector, and between two parallel segments it is
@@ -52,7 +68,7 @@ sampled boundary points produces — every Voronoi edge is by construction the
 perpendicular bisector of a pair of boundary samples, and the interior ones
 converge to the medial axis (Brandt & Algazi 1992, Attali & Montanvert 1997).
 
-Panel 4 above shows why the polygon step exists: run the same construction on
+Panel 4 of the top figure shows why the polygon step exists: run it on
 the raw pixel boundary and every staircase corner spawns its own bisector, so
 you get a comb of hairs. What survives on the simplified polygon is filtered by
 the **separation angle** — at a candidate point, measure the angle between the
