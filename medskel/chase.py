@@ -9,9 +9,9 @@ measured rather than invented.
 The files are named Image_01L.jpg, Image_01L_1stHO.png, Image_01L_2ndHO.png,
 for 14 subjects, left and right eye. "HO" is human observer.
 
-See data/README.md for where to get it. Nothing is downloaded automatically:
-the host sits behind a bot check, and silently fetching datasets is not a
-thing a library should do anyway.
+The dataset is not fetched automatically; see data/README.md for the source.
+A library quietly downloading several megabytes on import is a bad habit, and
+it hides where the data came from.
 """
 
 import io
