@@ -55,7 +55,7 @@ def main():
         t0 = time.time()
         sk = skeletonize(mask, epsilon=2.0, spacing=1.0, prune=1.0)
         t_ours = time.time() - t0
-        rows.append(_row(name, "ours eps=2", sk, truth, mask, sk.n_branches(),
+        rows.append(_row(name, "bisector eps=2", sk, truth, mask, sk.n_branches(),
                          expected, t_ours, compactness(sk, thin)))
 
         panels.append((name, mask, truth, sk, thin))
@@ -93,9 +93,9 @@ def _figure(panels):
     for ax, (name, mask, truth, sk, thin) in zip(axes, panels):
         viz.show_mask(ax, mask, cmap="gray")
         viz.draw_pixel_skeleton(ax, thin, ms=1.2, label="thinning")
-        viz.draw_skeleton(ax, sk, lw=1.5, label="ours")
+        viz.draw_skeleton(ax, sk, lw=1.5, label="bisector")
         viz.draw_centerline(ax, truth, lw=1.2, label="truth")
-        ax.set_title(f"{name}\n{sk.n_branches()} branches (ours)", fontsize=10)
+        ax.set_title(f"{name}\n{sk.n_branches()} branches (bisector)", fontsize=10)
         ax.legend(fontsize=7, loc="lower right")
     viz.finish(fig, os.path.join(OUT, "04_accuracy.png"))
 
@@ -111,7 +111,7 @@ def _markdown(rows):
               f"{r['branches']} ({r['expected_branches']}) | "
               f"{r['seconds']:.2f} s |")
 
-    ours = [r for r in rows if r["method"].startswith("ours")]
+    ours = [r for r in rows if r["method"].startswith("bisector")]
     print("\nstorage, both skeletons as polylines simplified at the SAME "
           "tolerance")
     print("(the advantage is a function of the tolerance, so here is the "
@@ -122,7 +122,7 @@ def _markdown(rows):
         line = f"  {r['case']:<16}"
         for t in tols:
             s = r["storage_by_tolerance"][t]
-            line += f"{s['thinning']:>8} vs{s['ours']:>5} ={s['ratio']:>4.1f}x"
+            line += f"{s['thinning']:>8} vs{s['bisector']:>5} ={s['ratio']:>4.1f}x"
         print(line)
 
 

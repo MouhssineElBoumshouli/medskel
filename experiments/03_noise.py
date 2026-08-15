@@ -58,7 +58,7 @@ def evaluate(mask, truth):
 
     for eps in (1.0, 2.0, 4.0):
         sk = skeletonize(mask, epsilon=eps, spacing=1.0, prune=1.0)
-        row[f"ours eps={eps:g}"] = dict(branches=sk.n_branches(),
+        row[f"bisector eps={eps:g}"] = dict(branches=sk.n_branches(),
                                         endpoints=sk.n_endpoints(),
                                         **_err(sk, truth))
     return row
@@ -91,7 +91,7 @@ def main():
         json.dump(records, f, indent=1)
 
     methods = ["thinning", "thinning+prune5", "thinning+prune15",
-               "ours eps=1", "ours eps=2", "ours eps=4"]
+               "bisector eps=1", "bisector eps=2", "bisector eps=4"]
     colors = ["#ff7f0e", "#ffbb78", "#8c564b",
               "#aec7e8", "#1f77b4", "#d62728"]
 
@@ -128,7 +128,8 @@ def main():
     axes[1].set_ylabel("mean distance to true centerline (px)")
     # No spin here: aggressive spur pruning wins this panel at high noise,
     # because throwing the spurs away leaves only the well centred core.
-    axes[1].set_title("centerline accuracy: comparable, and not ours at 3px")
+    axes[1].set_title("centerline accuracy: comparable,\n"
+                      "and not the bisector method at 3px")
     axes[1].grid(alpha=0.3)
     axes[1].legend(fontsize=8)
 
@@ -141,7 +142,7 @@ def main():
     viz.draw_pixel_skeleton(axes[2], thin, ms=1.6,
                             label=f"thinning ({baseline.count_pixel_branches(thin)['branches']} branches)")
     viz.draw_skeleton(axes[2], sk, lw=1.8,
-                      label=f"ours eps=4 ({sk.n_branches()} branches)")
+                      label=f"bisector eps=4 ({sk.n_branches()} branches)")
     axes[2].legend(fontsize=8, loc="lower right")
     axes[2].set_title("noise amplitude 3px")
 

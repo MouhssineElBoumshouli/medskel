@@ -3,35 +3,35 @@
   "closing": 0,
   "mask_px": 3105,
   "thinning": 19,
-  "ours_eps2": 20,
-  "ours_eps4": 15
+  "bisector_eps2": 20,
+  "bisector_eps4": 15
  },
  {
   "closing": 1,
   "mask_px": 4743,
   "thinning": 60,
-  "ours_eps2": 67,
-  "ours_eps4": 59
+  "bisector_eps2": 67,
+  "bisector_eps4": 59
  },
  {
   "closing": 2,
   "mask_px": 8267,
   "thinning": 71,
-  "ours_eps2": 86,
-  "ours_eps4": 66
+  "bisector_eps2": 86,
+  "bisector_eps4": 66
  },
  {
   "closing": 3,
   "mask_px": 13217,
   "thinning": 61,
-  "ours_eps2": 48,
-  "ours_eps4": 45
+  "bisector_eps2": 48,
+  "bisector_eps4": 45
  },
  {
   "closing": 4,
   "mask_px": 18559,
   "thinning": 109,
-  "ours_eps2": 106,
-  "ours_eps4": 99
+  "bisector_eps2": 106,
+  "bisector_eps4": 99
  }
 ]

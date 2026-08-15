@@ -8,40 +8,40 @@
   "centeredness": 0.9996214821833903,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.0013604164123535156,
+  "seconds": 0.0013890266418457031,
   "skeleton_pixels": null,
   "storage_by_tolerance": null
  },
  {
   "case": "straight tube",
-  "method": "ours eps=2",
+  "method": "bisector eps=2",
   "mean_error": 0.2283307458412373,
   "p95_error": 0.37985038610038374,
   "coverage": 1.0,
   "centeredness": 0.997674999695222,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.03480672836303711,
+  "seconds": 0.03464174270629883,
   "skeleton_pixels": 301,
   "storage_by_tolerance": {
    "0.25": {
     "thinning": 2,
-    "ours": 6,
+    "bisector": 6,
     "ratio": 0.3333333333333333
    },
    "0.5": {
     "thinning": 2,
-    "ours": 4,
+    "bisector": 4,
     "ratio": 0.5
    },
    "1.0": {
     "thinning": 2,
-    "ours": 4,
+    "bisector": 4,
     "ratio": 0.5
    },
    "2.0": {
     "thinning": 2,
-    "ours": 2,
+    "bisector": 2,
     "ratio": 1.0
    }
   }
@@ -55,40 +55,40 @@
   "centeredness": 0.9820461867460639,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.0024628639221191406,
+  "seconds": 0.002519845962524414,
   "skeleton_pixels": null,
   "storage_by_tolerance": null
  },
  {
   "case": "curved tube",
-  "method": "ours eps=2",
+  "method": "bisector eps=2",
   "mean_error": 0.48637647347193896,
   "p95_error": 1.051598349214275,
   "coverage": 1.0,
   "centeredness": 0.9736349258702969,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.10612893104553223,
+  "seconds": 0.1138010025024414,
   "skeleton_pixels": 401,
   "storage_by_tolerance": {
    "0.25": {
     "thinning": 178,
-    "ours": 25,
+    "bisector": 25,
     "ratio": 7.12
    },
    "0.5": {
     "thinning": 66,
-    "ours": 18,
+    "bisector": 18,
     "ratio": 3.6666666666666665
    },
    "1.0": {
     "thinning": 20,
-    "ours": 15,
+    "bisector": 15,
     "ratio": 1.3333333333333333
    },
    "2.0": {
     "thinning": 12,
-    "ours": 12,
+    "bisector": 12,
     "ratio": 1.0
    }
   }
@@ -102,40 +102,40 @@
   "centeredness": 0.9930115941852014,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.002315998077392578,
+  "seconds": 0.0023980140686035156,
   "skeleton_pixels": null,
   "storage_by_tolerance": null
  },
  {
   "case": "tapered tube",
-  "method": "ours eps=2",
+  "method": "bisector eps=2",
   "mean_error": 0.2202392029102777,
   "p95_error": 0.3348228301818389,
   "coverage": 1.0,
   "centeredness": 0.9888630447733177,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.04195404052734375,
+  "seconds": 0.04365873336791992,
   "skeleton_pixels": 401,
   "storage_by_tolerance": {
    "0.25": {
     "thinning": 2,
-    "ours": 3,
+    "bisector": 3,
     "ratio": 0.6666666666666666
    },
    "0.5": {
     "thinning": 2,
-    "ours": 2,
+    "bisector": 2,
     "ratio": 1.0
    },
    "1.0": {
     "thinning": 2,
-    "ours": 2,
+    "bisector": 2,
     "ratio": 1.0
    },
    "2.0": {
     "thinning": 2,
-    "ours": 2,
+    "bisector": 2,
     "ratio": 1.0
    }
   }
@@ -149,40 +149,40 @@
   "centeredness": 0.9817639679686295,
   "branches": 3,
   "expected_branches": 3,
-  "seconds": 0.0026040077209472656,
+  "seconds": 0.002837657928466797,
   "skeleton_pixels": null,
   "storage_by_tolerance": null
  },
  {
   "case": "bifurcation",
-  "method": "ours eps=2",
+  "method": "bisector eps=2",
   "mean_error": 0.29488950585449514,
   "p95_error": 0.6073197830913862,
   "coverage": 0.9961904761904762,
   "centeredness": 0.9826771699635886,
   "branches": 3,
   "expected_branches": 3,
-  "seconds": 0.1127924919128418,
+  "seconds": 0.11387968063354492,
   "skeleton_pixels": 577,
   "storage_by_tolerance": {
    "0.25": {
     "thinning": 282,
-    "ours": 13,
+    "bisector": 13,
     "ratio": 21.692307692307693
    },
    "0.5": {
     "thinning": 98,
-    "ours": 13,
+    "bisector": 13,
     "ratio": 7.538461538461538
    },
    "1.0": {
     "thinning": 10,
-    "ours": 9,
+    "bisector": 9,
     "ratio": 1.1111111111111112
    },
    "2.0": {
     "thinning": 8,
-    "ours": 8,
+    "bisector": 8,
     "ratio": 1.0
    }
   }
@@ -196,40 +196,40 @@
   "centeredness": 0.9486484629489867,
   "branches": 36,
   "expected_branches": 31,
-  "seconds": 0.004064083099365234,
+  "seconds": 0.00426030158996582,
   "skeleton_pixels": null,
   "storage_by_tolerance": null
  },
  {
   "case": "vessel tree",
-  "method": "ours eps=2",
+  "method": "bisector eps=2",
   "mean_error": 0.5155121867620871,
   "p95_error": 1.354293118819458,
   "coverage": 1.0,
   "centeredness": 0.9195190174729498,
   "branches": 36,
   "expected_branches": 31,
-  "seconds": 0.21786761283874512,
+  "seconds": 0.20986080169677734,
   "skeleton_pixels": 1173,
   "storage_by_tolerance": {
    "0.25": {
     "thinning": 551,
-    "ours": 122,
+    "bisector": 122,
     "ratio": 4.516393442622951
    },
    "0.5": {
     "thinning": 256,
-    "ours": 102,
+    "bisector": 102,
     "ratio": 2.5098039215686274
    },
    "1.0": {
     "thinning": 102,
-    "ours": 92,
+    "bisector": 92,
     "ratio": 1.108695652173913
    },
    "2.0": {
     "thinning": 78,
-    "ours": 74,
+    "bisector": 74,
     "ratio": 1.054054054054054
    }
   }

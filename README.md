@@ -39,8 +39,8 @@ graph. Panels 3–5 are a close-up of the region boxed in panel 2.*
   produced earlier
 - synthetic phantoms with known centerlines, so accuracy has something to be
   measured against
-- a section on what broke, including two errors of mine that inflated the
-  results before I caught them
+- a section on what broke, including three measurement errors of mine:
+  two that inflated the results and one that crippled them
 
 ---
 
@@ -137,15 +137,15 @@ the answer is known before anything runs.
 | phantom | method | mean err | p95 err | coverage | branches (true) | time |
 |---|---|---|---|---|---|---|
 | straight tube | thinning | 0.19 px | 0.38 px | 100% | 1 (1) | 0.00 s |
-| straight tube | ours | 0.23 px | 0.38 px | 100% | 1 (1) | 0.09 s |
+| straight tube | bisector | 0.23 px | 0.38 px | 100% | 1 (1) | 0.09 s |
 | curved tube | thinning | 0.46 px | 1.09 px | 100% | 1 (1) | 0.00 s |
-| curved tube | ours | 0.49 px | 1.05 px | 100% | 1 (1) | 0.19 s |
+| curved tube | bisector | 0.49 px | 1.05 px | 100% | 1 (1) | 0.19 s |
 | tapered tube | thinning | 0.17 px | 0.32 px | 100% | 1 (1) | 0.00 s |
-| tapered tube | ours | 0.22 px | 0.33 px | 100% | 1 (1) | 0.06 s |
+| tapered tube | bisector | 0.22 px | 0.33 px | 100% | 1 (1) | 0.06 s |
 | bifurcation | thinning | 0.43 px | 0.64 px | 98% | 3 (3) | 0.00 s |
-| bifurcation | ours | 0.29 px | 0.61 px | 100% | 3 (3) | 0.18 s |
+| bifurcation | bisector | 0.29 px | 0.61 px | 100% | 3 (3) | 0.18 s |
 | vessel tree | thinning | 0.49 px | 1.22 px | 100% | 36 (31) | 0.01 s |
-| vessel tree | ours | 0.52 px | 1.35 px | 100% | 36 (31) | 0.44 s |
+| vessel tree | bisector | 0.52 px | 1.35 px | 100% | 36 (31) | 0.44 s |
 
 On clean shapes there is **no advantage whatsoever**. Same accuracy to within
 0.05 px, identical branch counts, and this method is 25–75× slower. An earlier
@@ -162,7 +162,7 @@ looks like — and count branches.
 
 Branches reported, mean over 6 seeds. True answer is 3:
 
-| boundary noise | thinning | thinning + spur pruning | ours ε=2 | ours ε=4 |
+| boundary noise | thinning | thinning + spur pruning | bisector ε=2 | bisector ε=4 |
 |---|---|---|---|---|
 | 0.0 px | 3.0 | 3.0 | 3.0 | 3.0 |
 | 1.0 px | 6.8 | 5.2 | 3.5 | 3.2 |
@@ -195,7 +195,7 @@ levels, from none to the default, and compared:
 
 ![transfer](figures/07_does_it_transfer.png)
 
-| closing | mask px | thinning | ours ε=2 | ours ε=4 |
+| closing | mask px | thinning | bisector ε=2 | bisector ε=4 |
 |---|---|---|---|---|
 | 0 | 3105 | 19 | 20 | 15 |
 | 1 | 4743 | 60 | 67 | 59 |
@@ -265,10 +265,10 @@ observers, where **lower is better**. The last two are agreement fractions,
 where **higher is better**. p-values are Wilcoxon signed-rank, ε=4 against
 thinning:
 
-| | thinning | ours ε=2 | ours ε=4 | p |
+| | thinning | bisector ε=2 | bisector ε=4 | p |
 |---|---|---|---|---|
-| total vessel length | 0.093 | 0.034 | **0.032** | **<0.0001** ours |
-| bifurcation count | 0.216 | 0.145 | **0.122** | **0.003** ours |
+| total vessel length | 0.093 | 0.034 | **0.032** | **<0.0001** bisector |
+| bifurcation count | 0.216 | 0.145 | **0.122** | **0.003** bisector |
 | median calibre | 0.175 | 0.249 | 0.214 | 0.23, no difference |
 | median tortuosity | 0.004 | 0.013 | 0.007 | 0.008 thinning |
 | skeleton agreement | **0.809** | 0.762 | 0.716 | **<0.0001** thinning |

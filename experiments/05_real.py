@@ -81,10 +81,10 @@ def main():
     summary["retina"] = {
         "mask_px": int(mask.sum()),
         "polygon_vertices": int(skel.meta["n_polygon_vertices"]),
-        "ours_branches": skel.n_branches(),
-        "ours_bifurcations": skel.n_bifurcations(),
-        "ours_graph_components": int(skel.meta["n_components_raw"]),
-        "ours_seconds": t_ours,
+        "bisector_branches": skel.n_branches(),
+        "bisector_bifurcations": skel.n_bifurcations(),
+        "bisector_graph_components": int(skel.meta["n_components_raw"]),
+        "bisector_seconds": t_ours,
         "thinning_branches": thin_counts["branches"],
         "thinning_junctions": thin_counts["junctions"],
         "thinning_seconds": t_thin,
@@ -135,7 +135,7 @@ def main():
     ax.set_xticks([]); ax.set_yticks([])
     cb = fig.colorbar(sm, ax=ax, fraction=0.046)
     cb.set_label("vessel radius (px)", fontsize=9)
-    ax.set_title(f"ours, coloured by calibre\n{skel.n_branches()} branches, "
+    ax.set_title(f"bisector method, coloured by calibre\n{skel.n_branches()} branches, "
                  f"{skel.n_bifurcations()} bifurcations", fontsize=11)
 
     ax = fig.add_subplot(gs[0, 2])

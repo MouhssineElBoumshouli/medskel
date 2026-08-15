@@ -1,38 +1,38 @@
 {
  "total_length": {
   "thinning": 0.09287280727947342,
-  "ours eps=2": 0.03430275363900506,
-  "ours eps=4": 0.03215001705356024,
-  "wilcoxon_p_ours4_vs_thinning": 5.21540641784668e-08
+  "bisector eps=2": 0.03430275363900506,
+  "bisector eps=4": 0.03215001705356024,
+  "wilcoxon_p_bisector4_vs_thinning": 5.21540641784668e-08
  },
  "n_bifurcations": {
   "thinning": 0.21647888535305754,
-  "ours eps=2": 0.14491086831512362,
-  "ours eps=4": 0.12222222222222222,
-  "wilcoxon_p_ours4_vs_thinning": 0.0026621222496032715
+  "bisector eps=2": 0.14491086831512362,
+  "bisector eps=4": 0.12222222222222222,
+  "wilcoxon_p_bisector4_vs_thinning": 0.0026621222496032715
  },
  "median_calibre": {
   "thinning": 0.17462409839349102,
-  "ours eps=2": 0.2487178976873608,
-  "ours eps=4": 0.2137220412945087,
-  "wilcoxon_p_ours4_vs_thinning": 0.22697687149047852
+  "bisector eps=2": 0.2487178976873608,
+  "bisector eps=4": 0.2137220412945087,
+  "wilcoxon_p_bisector4_vs_thinning": 0.22697687149047852
  },
  "median_tortuosity": {
   "thinning": 0.0036383234578556555,
-  "ours eps=2": 0.012942339472130249,
-  "ours eps=4": 0.0065409651370291755,
-  "wilcoxon_p_ours4_vs_thinning": 0.008224666118621826
+  "bisector eps=2": 0.012942339472130249,
+  "bisector eps=4": 0.0065409651370291755,
+  "wilcoxon_p_bisector4_vs_thinning": 0.008224666118621826
  },
  "agreement": {
   "thinning": 0.8091512334234792,
-  "ours eps=2": 0.7622895084202232,
-  "ours eps=4": 0.7162655143949783,
-  "wilcoxon_p_ours4_vs_thinning": 7.450580596923828e-09
+  "bisector eps=2": 0.7622895084202232,
+  "bisector eps=4": 0.7162655143949783,
+  "wilcoxon_p_bisector4_vs_thinning": 7.450580596923828e-09
  },
  "agreement_core": {
   "thinning": 0.916393523510495,
-  "ours eps=2": 0.8629525713247499,
-  "ours eps=4": 0.790777350412136,
-  "wilcoxon_p_ours4_vs_thinning": 7.450580596923828e-09
+  "bisector eps=2": 0.8629525713247499,
+  "bisector eps=4": 0.790777350412136,
+  "wilcoxon_p_bisector4_vs_thinning": 7.450580596923828e-09
  }
 }

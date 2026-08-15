@@ -237,7 +237,7 @@ def compactness(skeleton, pixel_skeleton, tolerances=(0.25, 0.5, 1.0, 2.0)):
         ours = int(sum(len(d["polyline"]) for *_, d in
                        _reduce_to_branches(skeleton.graph, simplify=tol
                                            ).edges(data=True)))
-        sweep[str(tol)] = {"thinning": theirs, "ours": ours,
+        sweep[str(tol)] = {"thinning": theirs, "bisector": ours,
                            "ratio": theirs / ours if ours else np.nan}
 
     return {"skeleton_pixels": n_pix,

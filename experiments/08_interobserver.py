@@ -45,7 +45,7 @@ RESULTS = os.path.join(ROOT, "results")
 
 MEASURES = ["total_length", "n_bifurcations", "median_calibre",
             "median_tortuosity"]
-METHODS = ["thinning", "ours eps=2", "ours eps=4"]
+METHODS = ["thinning", "bisector eps=2", "bisector eps=4"]
 LIMIT = int(os.environ.get("CHASE_LIMIT", "0"))    # 0 = all cases
 
 
@@ -155,7 +155,7 @@ def report(records):
     print("(lower is better: the measurement moved less when the tracer "
           "changed)\n")
     print(f"{'measure':<20}" + "".join(f"{m:>14}" for m in METHODS) +
-          f"{'ours4 vs thin':>16}")
+          f"{'bisec4 vs thin':>16}")
 
     summary = {}
     for k in MEASURES + ["agreement", "agreement_core"]:
@@ -167,7 +167,7 @@ def report(records):
             line += f"{np.nanmedian(v):>14.3f}"
 
         a = vals["thinning"]
-        b = vals["ours eps=4"]
+        b = vals["bisector eps=4"]
         ok = np.isfinite(a) & np.isfinite(b)
         if ok.sum() >= 6 and not np.allclose(a[ok], b[ok]):
             stat, p = wilcoxon(a[ok], b[ok])
@@ -176,7 +176,7 @@ def report(records):
             p = np.nan
             line += f"{'n/a':>16}"
         summary[k] = {m: float(np.nanmedian(vals[m])) for m in METHODS}
-        summary[k]["wilcoxon_p_ours4_vs_thinning"] = None if not np.isfinite(p) else float(p)
+        summary[k]["wilcoxon_p_bisector4_vs_thinning"] = None if not np.isfinite(p) else float(p)
         print(line)
 
     print("\nagreement is a fraction where higher is better; the other rows")
@@ -202,7 +202,7 @@ def figure(records, cases):
 
     ax = axes[1]
     data = [[r[f"{m}|total_length"] for r in records] for m in METHODS]
-    ax.boxplot(data, tick_labels=[m.replace("ours ", "") for m in METHODS])
+    ax.boxplot(data, tick_labels=[m.replace("bisector ", "") for m in METHODS])
     ax.set_ylabel("relative change in total vessel length")
     ax.set_title("how much the measurement moves\nwhen the tracer changes",
                  fontsize=11)
@@ -210,7 +210,7 @@ def figure(records, cases):
 
     ax = axes[2]
     data = [[r[f"{m}|agreement"] for r in records] for m in METHODS]
-    ax.boxplot(data, tick_labels=[m.replace("ours ", "") for m in METHODS])
+    ax.boxplot(data, tick_labels=[m.replace("bisector ", "") for m in METHODS])
     ax.set_ylabel("fraction of skeleton within 2px of the other observer's")
     ax.set_title("do the two skeletons trace\nthe same curves?", fontsize=11)
     ax.grid(alpha=0.3, axis="y")

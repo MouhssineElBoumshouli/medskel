@@ -1,7 +1,7 @@
 """Figure 7: does the noise advantage show up on a real image? No.
 
 experiments/03_noise.py shows that on a synthetic phantom with correlated
-noise added to its boundary, this method reports far fewer spurious branches
+noise added to its boundary, the bisector method reports far fewer spurious branches
 than pixel thinning. That is a real result about that phantom. It is not, by
 itself, a result about medical images, and this script is the check that says
 so out loud.
@@ -12,8 +12,8 @@ the advantage only exists on rough boundaries, and the segmentation hands over
 a smooth one, then the advantage never gets a chance to matter. So: rebuild the
 mask at several closing radii, from none to the default, and compare.
 
-The answer is that the two methods agree at every setting, and at eps=2 this
-method is sometimes slightly worse. The advantage does not transfer.
+The answer is that the two methods agree at every setting, and at eps=2 the
+bisector method is sometimes slightly worse. The advantage does not transfer.
 
 Two honest caveats on the negative result, in both directions:
 
@@ -49,8 +49,8 @@ def main():
     rows = []
 
     print("rebuilding the vessel mask at several smoothing levels")
-    print(f"{'closing':<9}{'mask px':>9}{'thinning':>10}{'ours e=2':>10}"
-          f"{'ours e=4':>10}")
+    print(f"{'closing':<9}{'mask px':>9}{'thinning':>10}{'bisector e=2':>13}"
+          f"{'bisector e=4':>13}")
 
     masks = {}
     for cl in CLOSINGS:
@@ -62,13 +62,13 @@ def main():
             "closing": cl,
             "mask_px": int(mask.sum()),
             "thinning": baseline.count_pixel_branches(thin)["branches"],
-            "ours_eps2": skeletonize(mask, epsilon=2.0, prune=1.0).n_branches(),
-            "ours_eps4": skeletonize(mask, epsilon=4.0, prune=1.0).n_branches(),
+            "bisector_eps2": skeletonize(mask, epsilon=2.0, prune=1.0).n_branches(),
+            "bisector_eps4": skeletonize(mask, epsilon=4.0, prune=1.0).n_branches(),
         }
         rows.append(row)
         masks[cl] = mask
         print(f"{cl:<9}{row['mask_px']:>9}{row['thinning']:>10}"
-              f"{row['ours_eps2']:>10}{row['ours_eps4']:>10}")
+              f"{row['bisector_eps2']:>13}{row['bisector_eps4']:>13}")
 
     with open(os.path.join(RESULTS, "transfer.json"), "w") as f:
         json.dump(rows, f, indent=1)
@@ -79,10 +79,10 @@ def main():
     x = [r["closing"] for r in rows]
     ax.plot(x, [r["thinning"] for r in rows], "--o", color="#ff7f0e",
             label="pixel thinning")
-    ax.plot(x, [r["ours_eps2"] for r in rows], "-o", color="#1f77b4",
-            label="ours eps=2")
-    ax.plot(x, [r["ours_eps4"] for r in rows], "-o", color="#d62728",
-            label="ours eps=4")
+    ax.plot(x, [r["bisector_eps2"] for r in rows], "-o", color="#1f77b4",
+            label="bisector eps=2")
+    ax.plot(x, [r["bisector_eps4"] for r in rows], "-o", color="#d62728",
+            label="bisector eps=4")
     ax.set_xlabel("smoothing applied when building the mask (px)")
     ax.set_ylabel("branches reported")
     ax.set_title("on the real image the methods agree\n"

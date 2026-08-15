@@ -2,34 +2,34 @@
  "retina": {
   "mask_px": 18559,
   "polygon_vertices": 315,
-  "ours_branches": 106,
-  "ours_bifurcations": 45,
-  "ours_graph_components": 29,
-  "ours_seconds": 0.5842289924621582,
+  "bisector_branches": 106,
+  "bisector_bifurcations": 45,
+  "bisector_graph_components": 29,
+  "bisector_seconds": 0.5921003818511963,
   "thinning_branches": 109,
   "thinning_junctions": 53,
-  "thinning_seconds": 0.009265661239624023,
+  "thinning_seconds": 0.009417295455932617,
   "polyline_vertices": 554,
   "skeleton_pixels": 2864,
   "storage_by_tolerance": {
    "0.25": {
     "thinning": 1486,
-    "ours": 554,
+    "bisector": 554,
     "ratio": 2.6823104693140793
    },
    "0.5": {
     "thinning": 834,
-    "ours": 382,
+    "bisector": 382,
     "ratio": 2.183246073298429
    },
    "1.0": {
     "thinning": 381,
-    "ours": 321,
+    "bisector": 321,
     "ratio": 1.1869158878504673
    },
    "2.0": {
     "thinning": 288,
-    "ours": 263,
+    "bisector": 263,
     "ratio": 1.0950570342205324
    }
   },
