@@ -35,7 +35,8 @@ import numpy as np
 import networkx as nx
 from scipy.spatial import Voronoi, cKDTree
 
-from .polygon import mask_to_polygon, sample_boundary, polygon_contains
+from .polygon import (mask_to_polygons, sample_boundary,
+                      polygon_contains)
 
 
 class Skeleton:
@@ -121,17 +122,54 @@ def skeletonize(mask, epsilon=2.0, spacing=1.0, theta_deg=70.0,
     prune      remove a leaf branch shorter than prune * (local radius).
                0 disables pruning.
 
-    largest_component defaults to False, and that is a correction rather than
-    a preference. The angle test can cut the graph at a tight bifurcation, so
-    a connected mask does not always give a connected skeleton. Keeping only
-    the biggest piece threw away 22% of the total vessel length on the retina
-    image, which is not a fair thing to compare against pixel thinning, since
-    thinning skeletonizes all of the mask. meta["n_components_raw"] records how
-    many pieces there were, because a high count is a warning sign.
+    Every connected component of the mask is skeletonized, not just the
+    largest. Both of the defaults here are corrections to earlier versions that
+    silently discarded parts of the answer:
+
+    - Only polygonizing the biggest blob looked harmless, since a median 99% of
+      a mask survives it. Then on CHASE_DB1 it hit masks whose largest
+      component was 52% of the traced vessel and halved the skeleton, while
+      pixel thinning kept everything. That is not a defensible comparison.
+    - largest_component defaults to False for the same reason one level down:
+      the angle test can cut the graph at a tight bifurcation, so even a
+      connected mask need not give a connected skeleton, and keeping only the
+      biggest piece discarded 22% of total vessel length on the retina image.
+
+    meta["n_components_raw"] records how many pieces the graph came out in,
+    because a high count is a warning sign worth seeing.
     """
-    boundary = mask_to_polygon(mask, epsilon=epsilon, keep_holes=keep_holes)
-    return skeletonize_polygon(boundary, spacing=spacing, theta_deg=theta_deg,
-                               prune=prune, largest_component=largest_component)
+    boundaries = mask_to_polygons(mask, epsilon=epsilon, keep_holes=keep_holes)
+
+    parts = [skeletonize_polygon(b, spacing=spacing, theta_deg=theta_deg,
+                                 prune=prune,
+                                 largest_component=largest_component)
+             for b in boundaries]
+    return _merge(parts, boundaries)
+
+
+def _merge(parts, boundaries):
+    """Combine per-component skeletons into one, renumbering node ids."""
+    if len(parts) == 1:
+        parts[0].boundaries = boundaries
+        return parts[0]
+
+    merged = nx.Graph()
+    offset = 0
+    meta = {"n_boundary_samples": 0, "n_polygon_vertices": 0,
+            "n_voronoi_vertices": 0, "n_components_raw": 0}
+    for p in parts:
+        merged.add_nodes_from((n + offset, d)
+                              for n, d in p.graph.nodes(data=True))
+        merged.add_edges_from((u + offset, v + offset, d)
+                              for u, v, d in p.graph.edges(data=True))
+        offset += max(p.graph.nodes, default=-1) + 1
+        for k in meta:
+            meta[k] += p.meta.get(k, 0)
+
+    meta["n_mask_components"] = len(parts)
+    out = Skeleton(merged, boundaries[0], meta)
+    out.boundaries = boundaries
+    return out
 
 
 def skeletonize_polygon(boundary, spacing=1.0, theta_deg=70.0, prune=1.0,

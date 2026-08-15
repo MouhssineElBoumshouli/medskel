@@ -42,11 +42,61 @@ class Boundary:
         return sum(len(r) for r in self.rings)
 
 
+def mask_to_polygons(mask, epsilon=2.0, keep_holes=True, min_area=20.0):
+    """Every connected component of `mask` as its own polygon, largest first.
+
+    Use this rather than mask_to_polygon() on anything real. A hand-traced
+    vessel tree is usually *not* one connected blob: an expert's tracing breaks
+    into a handful of pieces where a faint vessel was left out. Keeping only
+    the biggest piece looks harmless (a median of 99% of the mask survives) and
+    then quietly destroys the occasional case: on CHASE_DB1 there are masks
+    where the largest component is 52% of the traced vessel, and dropping the
+    rest halved the skeleton.
+    """
+    mask_u8 = (np.asarray(mask) > 0).astype(np.uint8)
+
+    mode = cv2.RETR_CCOMP if keep_holes else cv2.RETR_EXTERNAL
+    contours, hierarchy = cv2.findContours(mask_u8, mode, cv2.CHAIN_APPROX_NONE)
+    if not contours:
+        raise ValueError("no foreground found in the mask")
+
+    hierarchy = hierarchy[0] if hierarchy is not None else None
+    outer_ids = [i for i in range(len(contours))
+                 if hierarchy is None or hierarchy[i][3] < 0]
+    outer_ids.sort(key=lambda i: cv2.contourArea(contours[i]), reverse=True)
+
+    out = []
+    for oid in outer_ids:
+        if cv2.contourArea(contours[oid]) < min_area:
+            continue
+        outer = _simplify(contours[oid], epsilon)
+        if len(outer) < 3:
+            continue
+
+        hole_ids = []
+        if keep_holes and hierarchy is not None:
+            hole_ids = [i for i in range(len(contours))
+                        if hierarchy[i][3] == oid
+                        and cv2.contourArea(contours[i]) >= min_area]
+        holes = [_simplify(contours[i], epsilon) for i in hole_ids]
+        holes = [h for h in holes if len(h) >= 3]
+
+        out.append(Boundary(_orient(outer, ccw=True),
+                            [_orient(h, ccw=False) for h in holes]))
+
+    if not out:
+        raise ValueError("no component large enough to polygonize")
+    return out
+
+
 def mask_to_polygon(mask, epsilon=2.0, keep_holes=True, min_area=20.0):
-    """Extract the largest component of `mask` and simplify it to a polygon.
+    """The largest component of `mask`, simplified to a polygon.
 
     `epsilon` is in pixels and is passed straight to RDP. epsilon=0 keeps every
     boundary pixel, which is the "no regularization" case we compare against.
+
+    Only the largest component: see mask_to_polygons() for why that is usually
+    the wrong thing to want.
     """
     mask_u8 = (np.asarray(mask) > 0).astype(np.uint8)
 

@@ -8,7 +8,7 @@
   "centeredness": 0.9996214821833903,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.0015497207641601562,
+  "seconds": 0.0013604164123535156,
   "skeleton_pixels": null,
   "storage_by_tolerance": null
  },
@@ -21,7 +21,7 @@
   "centeredness": 0.997674999695222,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.034720420837402344,
+  "seconds": 0.03480672836303711,
   "skeleton_pixels": 301,
   "storage_by_tolerance": {
    "0.25": {
@@ -55,7 +55,7 @@
   "centeredness": 0.9820461867460639,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.002474069595336914,
+  "seconds": 0.0024628639221191406,
   "skeleton_pixels": null,
   "storage_by_tolerance": null
  },
@@ -68,7 +68,7 @@
   "centeredness": 0.9736349258702969,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.1051032543182373,
+  "seconds": 0.10612893104553223,
   "skeleton_pixels": 401,
   "storage_by_tolerance": {
    "0.25": {
@@ -102,7 +102,7 @@
   "centeredness": 0.9930115941852014,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.002291440963745117,
+  "seconds": 0.002315998077392578,
   "skeleton_pixels": null,
   "storage_by_tolerance": null
  },
@@ -115,7 +115,7 @@
   "centeredness": 0.9888630447733177,
   "branches": 1,
   "expected_branches": 1,
-  "seconds": 0.04167652130126953,
+  "seconds": 0.04195404052734375,
   "skeleton_pixels": 401,
   "storage_by_tolerance": {
    "0.25": {
@@ -149,7 +149,7 @@
   "centeredness": 0.9817639679686295,
   "branches": 3,
   "expected_branches": 3,
-  "seconds": 0.002616405487060547,
+  "seconds": 0.0026040077209472656,
   "skeleton_pixels": null,
   "storage_by_tolerance": null
  },
@@ -162,7 +162,7 @@
   "centeredness": 0.9826771699635886,
   "branches": 3,
   "expected_branches": 3,
-  "seconds": 0.11203360557556152,
+  "seconds": 0.1127924919128418,
   "skeleton_pixels": 577,
   "storage_by_tolerance": {
    "0.25": {
@@ -196,7 +196,7 @@
   "centeredness": 0.9486484629489867,
   "branches": 36,
   "expected_branches": 31,
-  "seconds": 0.0041120052337646484,
+  "seconds": 0.004064083099365234,
   "skeleton_pixels": null,
   "storage_by_tolerance": null
  },
@@ -209,7 +209,7 @@
   "centeredness": 0.9195190174729498,
   "branches": 36,
   "expected_branches": 31,
-  "seconds": 0.2108936309814453,
+  "seconds": 0.21786761283874512,
   "skeleton_pixels": 1173,
   "storage_by_tolerance": {
    "0.25": {

@@ -56,6 +56,37 @@ def skeleton_for(method, mask):
     return skeletonize(mask, epsilon=eps, prune=1.0)
 
 
+def core_agreement(s1, s2, mask1, mask2, tol=2.0):
+    """Agreement counted only where BOTH observers agree a vessel exists.
+
+    Pre-specified before any of this was run, to separate the two things mixed
+    into the raw agreement number. Experts disagree partly about where a vessel
+    edge sits (the perturbation we care about) and partly about whether a faint
+    vessel is there at all (which no skeletonizer can absorb). Restricting to
+    the intersection of the two masks drops the second kind.
+    """
+    from scipy.spatial import cKDTree
+    from medskel.metrics import _as_points
+
+    core = (np.asarray(mask1) > 0) & (np.asarray(mask2) > 0)
+    h, w = core.shape
+
+    def inside(est):
+        p = _as_points(est, 1.0)
+        if len(p) == 0:
+            return p
+        xi = np.clip(np.round(p[:, 0]).astype(int), 0, w - 1)
+        yi = np.clip(np.round(p[:, 1]).astype(int), 0, h - 1)
+        return p[core[yi, xi]]
+
+    pa, pb = inside(s1), inside(s2)
+    if len(pa) == 0 or len(pb) == 0:
+        return np.nan
+    da, _ = cKDTree(pb).query(pa)
+    db, _ = cKDTree(pa).query(pb)
+    return float(0.5 * (np.mean(da <= tol) + np.mean(db <= tol)))
+
+
 def relative_difference(a, b):
     if not np.isfinite(a) or not np.isfinite(b):
         return np.nan
@@ -96,6 +127,8 @@ def main():
 
             agree = skeleton_agreement(s1, s2, tol=2.0)
             row[f"{method}|agreement"] = agree
+            row[f"{method}|agreement_core"] = core_agreement(
+                s1, s2, c["obs1"], c["obs2"], tol=2.0)
             line += f"{agree:>14.3f}"
 
         print(line)
@@ -125,7 +158,7 @@ def report(records):
           f"{'ours4 vs thin':>16}")
 
     summary = {}
-    for k in MEASURES + ["agreement"]:
+    for k in MEASURES + ["agreement", "agreement_core"]:
         line = f"{k:<20}"
         vals = {}
         for m in METHODS:

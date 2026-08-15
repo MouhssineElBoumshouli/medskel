@@ -5,10 +5,10 @@
   "ours_branches": 106,
   "ours_bifurcations": 45,
   "ours_graph_components": 29,
-  "ours_seconds": 0.5771098136901855,
+  "ours_seconds": 0.5842289924621582,
   "thinning_branches": 109,
   "thinning_junctions": 53,
-  "thinning_seconds": 0.009457826614379883,
+  "thinning_seconds": 0.009265661239624023,
   "polyline_vertices": 554,
   "skeleton_pixels": 2864,
   "storage_by_tolerance": {

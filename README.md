@@ -5,13 +5,21 @@ and Rhazzaf (2024)](docs/saidou-et-al-2024-a-novel-method-of-skeletonization-of-
 applied to 2D medical segmentations, with an evaluation against the standard
 pixel-thinning baseline.
 
-**The short version of what I found:** the method is correct, and I can validate
-it exactly against answers computed by hand. It reports fewer spurious branches
-than pixel thinning on synthetic shapes whose boundary I deliberately roughen.
-But that advantage **does not reproduce on the real image I tested** — there the
-two methods agree to within a few percent — and it costs about 66× the runtime.
-The write-up below is mostly the evidence for those three sentences, including
-two measurement errors of my own that I had to correct along the way.
+**The short version of what I found.** The method is correct, and I can
+validate it exactly against answers computed by hand. Tested against real
+expert disagreement — 28 retinal images each traced independently by two
+people — it is **substantially more reproducible than pixel thinning on the
+measurements a study would actually report**: total vessel length moves 3×
+less between observers (p<0.0001) and bifurcation count 1.8× less (p=0.003).
+It is **less stable in where it puts the centerline** (p<0.0001 the other way),
+and it costs about 66× the runtime.
+
+So it is a trade, not a win: the polygon step buys reproducible *global*
+measurements at the cost of *local* positional stability.
+
+Everything below is the evidence for that, including three measurement errors
+of my own that I had to find and correct. Two of them were flattering the
+method; one was crippling it.
 
 Nourddin Saidou teaches at my university and suggested I implement the paper,
 which is how this started.
@@ -25,7 +33,8 @@ graph. Panels 3–5 are a close-up of the region boxed in panel 2.*
 
 - `medskel/` — the method, plus an independent second implementation of the
   paper's own wavefront construction used to cross-check it
-- 7 experiments that regenerate every figure and table below from scratch
+- 8 experiments that regenerate every figure and table below from scratch,
+  including a two-observer reproducibility study on 28 clinical images
 - 14 tests, each against a value derived by hand rather than a value the code
   produced earlier
 - synthetic phantoms with known centerlines, so accuracy has something to be
@@ -172,10 +181,13 @@ fewer false branches. Two qualifications that belong next to it:
   against 4.04 px for ε=4, because discarding all the spurs leaves only the
   well-centered core. It buys accuracy by discarding structure.
 
-## Does the advantage transfer to a real image? No.
+## Does the branch-count advantage transfer to a real image? No.
 
 The noise result above is a fact about that phantom. Whether it is a fact about
-medical images is a separate question, and the answer here is no.
+medical images is a separate question, and for branch counting the answer is
+no. (The inter-observer section further down asks a different question of real
+data — how much a measurement *moves* between two tracings rather than what it
+equals on one — and gets a different answer.)
 
 The vessel mask is built with a morphological closing that smooths the boundary
 before the skeletonizer ever sees it. So I rebuilt the mask at five smoothing
@@ -197,8 +209,9 @@ worse. The gap measured on the phantom does not appear.
 Two caveats, in both directions. There is **no ground truth** on a fundus
 image, so agreeing on ~106 branches does not mean either method is right, only
 that they agree — unlike the phantom, where "3" is a fact. And this is **one
-image and one segmentation pipeline**, which is evidence, not proof. Settling
-it would need an annotated dataset such as DRIVE or STARE.
+image and one segmentation pipeline**, which is evidence, not proof. That is
+what pushed me to the two-observer experiment below, which uses 28 images and
+a perturbation measured rather than invented.
 
 ## The real images, descriptively
 
@@ -227,6 +240,67 @@ count is exactly zero, which is one of the tests.) The clearance radius stored
 at every node is half the local bone thickness, so the bottom-right panel is a
 bone-thickness profile around the vault, median 7.1 px, with nothing extra
 written to obtain it.
+
+## Does it survive real expert disagreement?
+
+This is the main result, and it is the one experiment here that uses a
+perturbation nobody invented. Everything above either uses noise I wrote myself
+(experiment 03) or a single image with no ground truth (07).
+
+**CHASE_DB1** provides 28 retinal images, each segmented independently by *two*
+people. Two experts tracing the same vessel disagree about where its edge is,
+and that disagreement is precisely the thing the polygon step claims to absorb.
+So: skeletonize observer 1's mask and observer 2's mask, and ask how far the
+resulting measurements moved. A method that absorbs boundary variation should
+move less. Both methods see the identical pair of masks, so any difference
+between them comes from how they handle the boundary.
+
+Median inter-observer Dice is 0.773, so the two tracings genuinely overlap
+without being identical — the right regime for this question.
+
+![interobserver](figures/08_interobserver.png)
+
+Medians over 28 images. The first four rows are relative movement between
+observers, where **lower is better**. The last two are agreement fractions,
+where **higher is better**. p-values are Wilcoxon signed-rank, ε=4 against
+thinning:
+
+| | thinning | ours ε=2 | ours ε=4 | p |
+|---|---|---|---|---|
+| total vessel length | 0.093 | 0.034 | **0.032** | **<0.0001** ours |
+| bifurcation count | 0.216 | 0.145 | **0.122** | **0.003** ours |
+| median calibre | 0.175 | 0.249 | 0.214 | 0.23, no difference |
+| median tortuosity | 0.004 | 0.013 | 0.007 | 0.008 thinning |
+| skeleton agreement | **0.809** | 0.762 | 0.716 | **<0.0001** thinning |
+| agreement, thick vessels only | **0.916** | 0.863 | 0.791 | **<0.0001** thinning |
+
+**The result splits cleanly, and the split is the interesting part.**
+
+Change the person doing the tracing, and the total vessel length this method
+reports moves by 3.2%, against 9.3% for pixel thinning. Bifurcation count moves
+12% against 22%. Those are the numbers a morphometry study reports, and on them
+the method is decisively more reproducible.
+
+But ask *where the centerline actually is* and thinning wins just as decisively:
+81% of its skeleton lands within 2 px of the other observer's, against 72%.
+That is not the thin-vessel confound talking — restricting to the region both
+observers agree is vessel (last row, pre-specified before running any of this)
+widens the gap rather than closing it.
+
+Tortuosity nominally favours thinning, but at 0.004 against 0.007 both are so
+small that I would not read anything into it.
+
+The mechanism is visible in the ordering. Going thinning → ε=2 → ε=4, global
+reproducibility improves monotonically and positional agreement degrades
+monotonically. Simplifying the boundary discards observer-specific detail,
+which is exactly why the aggregate measurements stabilise — and the same
+discarding is a discrete decision about which vertices survive, so the
+centerline itself shifts more between two similar inputs.
+
+**What this does and does not license.** It supports "more reproducible vessel
+morphometry between raters". It does not support "more accurate", because there
+is no ground truth here — only two humans who disagree. A method could be
+consistently wrong in the same way on both tracings and score well on this.
 
 ## What broke
 
@@ -273,11 +347,33 @@ is 1.1–1.2× at any sensible tolerance.
 I found the first of these because someone looked at my figure and said they
 could not see the spurs I claimed were there. They were right.
 
+**4. One error going the other way, which crippled the method.**
+`mask_to_polygon()` kept only the largest connected component of the mask. On a
+median mask that is 99% of it, so it never showed up — until CHASE_DB1, where a
+hand-traced vessel tree routinely breaks into several pieces. On four of the 56
+masks the largest component was only 52–73% of the traced vessel, so the method
+was skeletonizing half a tree while thinning skeletonized all of it.
+
+The symptom was two catastrophic outliers in the inter-observer experiment,
+which is the only reason I found it: from two masks differing by 2%, it
+produced skeletons of length 9193 and 5655. `mask_to_polygons()` now returns
+every component and `skeletonize()` merges their skeletons.
+
+Before the fix, the inter-observer experiment said the method was no better on
+anything and significantly worse on two measures. After it, the method is
+significantly *better* on total length and bifurcation count. A bug I had not
+found would have produced a confidently wrong conclusion in the write-up.
+
 ## Limitations
 
-- **The advantage is unproven on real data.** Demonstrated on synthetic
-  phantoms with added boundary noise; did not reproduce on the one real image
-  tested. Nothing here is validated against expert annotation.
+- **Reproducible is not accurate.** The inter-observer result shows the
+  measurements move less between raters. It cannot show they are closer to the
+  truth, because there is no ground truth in that dataset — a method that is
+  consistently wrong the same way on both tracings scores well.
+- **Positional stability is worse** than thinning, significantly, and the gap
+  grows with more simplification. If what you need is the centerline in the
+  right place rather than a reproducible summary number, this is the wrong
+  tool.
 - **It is 66× slower** than thinning on the retina image.
 - **The skeleton graph fragments** — 29 pieces on a mask that is one connected
   component, because the separation angle thresholds each vertex independently
@@ -330,18 +426,28 @@ Layout: [`medskel/`](medskel/) is the library (`polygon` → `voronoi` → graph
 
 ## What I would do next
 
-The honest state is that this method matches pixel thinning on the data I have,
-and the case for it rests on a synthetic noise model I wrote myself. So the
-first thing to do is not to improve the method — it is to find out whether the
-noise regime where it wins ever actually occurs. That means an annotated
-dataset, DRIVE or STARE, where "how many vessels are there" has an answer a
-human wrote down. With ground truth you can ask the question that matters:
-across a range of segmentation qualities, is there a regime where this method
-recovers the annotated branch count better than thinning does? My synthetic
-result predicts there should be one at rough boundaries. The retina result
-suggests boundaries that rough may not occur once a normal segmentation
-pipeline has applied its own smoothing. Those are distinguishable, and until
-they are distinguished the method has no demonstrated use.
+The result I would chase is the split in the inter-observer table, because I do
+not think it is a coincidence and I can state it as a mechanism: simplification
+discards observer-specific boundary detail, which stabilises anything you
+integrate over the whole tree, and simultaneously makes a discrete choice about
+which vertices survive, which destabilises where any individual point of the
+centerline lands. Global up, local down, monotonically in ε.
+
+If that is right, the two effects are separable and you should be able to have
+both. Concretely: run the whole pipeline at several tolerances at once and keep
+the *geometry* from the finest while taking the *branch structure* from the
+coarsest — a coarse skeleton decides what the branches are, a fine one decides
+where they go. The prediction is specific enough to fail: positional agreement
+should return to the ε=0 level while total-length reproducibility stays near
+the ε=4 level. If instead reproducibility collapses back to thinning's, then
+the stability was coming from the coarse geometry itself and the mechanism I
+just described is wrong.
+
+The other thing this needs is **accuracy**, which the two-observer design
+structurally cannot supply. Reproducible and correct are different properties,
+and everything real in this repo measures the first. Doing better means an
+annotated dataset where a human wrote down how many vessels there are, and
+comparing against that rather than against a second opinion.
 
 The concrete engineering problem, meanwhile, is the fragmentation, and
 [`experiments/06_knobs.py`](experiments/06_knobs.py) already narrows it down.
@@ -378,4 +484,9 @@ tubular structure is a genuinely different problem, not a port of this code.
   skeletons.* CVIU, 1997.
 - O. Aichholzer, F. Aurenhammer, D. Alberts, B. Gärtner. *A novel type of
   skeleton for polygons.* J. Universal Computer Science, 1995.
+- M. M. Fraz et al. *An Ensemble Classification-Based Approach Applied to
+  Retinal Blood Vessel Segmentation.* IEEE Trans. Biomedical Engineering,
+  59(9), 2012. doi:10.1109/TBME.2012.2205687 — the CHASE_DB1 dataset, CC BY
+  4.0, used for the two-observer experiment. Not redistributed here; see
+  [`data/README.md`](data/README.md).
 - Images from `skimage.data.retina()` and `skimage.data.brain()`.
